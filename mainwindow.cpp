@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     createDeviceSelector();
+
 }
 
 MainWindow::~MainWindow()
@@ -37,7 +38,7 @@ void MainWindow::createDeviceSelector()
     {
          inputSelector->addItem(deviceInfo.deviceName());
 
-         /** FIXME: store deviceInfo **/
+         /* store deviceInfo */
          inputDevices.append(deviceInfo);
     }
 
@@ -67,24 +68,27 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
         format.setByteOrder(QAudioFormat::LittleEndian);
         format.setSampleType(QAudioFormat::Float);
 
+#if 0
         qDebug() << "Input device: " << inputDevices.at(inputSelector->currentIndex()).deviceName();
         qDebug() << "      Codecs: " << inputDevices.at(inputSelector->currentIndex()).supportedCodecs();
         qDebug() << "    Channels: " << inputDevices.at(inputSelector->currentIndex()).supportedChannelCounts();
         qDebug() << "Sample rates: " << inputDevices.at(inputSelector->currentIndex()).supportedSampleRates();
         qDebug() << "Sample types: " << inputDevices.at(inputSelector->currentIndex()).supportedSampleTypes();
         qDebug() << "Sample sizes: " << inputDevices.at(inputSelector->currentIndex()).supportedSampleSizes();
+#endif
 
-
-        //audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), format);
+        audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), format);
 
         /* disable selector and update status tip */
         inputSelector->setEnabled(false);
         ui->actionDecode->setStatusTip(tr("Stop decoder"));
     }
     else {
-
         /* enable selector and update status tip */
         inputSelector->setEnabled(true);
         ui->actionDecode->setStatusTip(tr("Start decoder"));
+
+        delete audioInput;
     }
 }
+

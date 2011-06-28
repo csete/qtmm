@@ -32,7 +32,6 @@ private:
     QList<QAudioDeviceInfo> inputDevices;  /*! List of available audio input devices. */
     QAudioInput *audioInput;               /*! Audio input object. */
 
-
     void createDeviceSelector();
 
 };
