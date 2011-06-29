@@ -46,11 +46,13 @@ CSsi::CSsi(QWidget *parent)
     : QWidget(parent)
 {
     setBackgroundRole(QPalette::Base);
-    setAutoFillBackground(true);
+    //setAutoFillBackground(true);
+
+    setStatusTip(tr("Input level indicator"));
 
     m_level = 0;
     setMinimumHeight(30);
-    setMinimumWidth(200);
+    setMinimumWidth(150);
 }
 
 
