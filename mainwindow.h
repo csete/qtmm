@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QAudioInput>
 #include <QList>
+#include "audiobuffer.h"
 #include "ssi.h"
 
 
@@ -33,9 +34,12 @@ private:
     CSsi       *ssi;            /*! Input level indicator. */
 
     QList<QAudioDeviceInfo> inputDevices;  /*! List of available audio input devices. */
-    QAudioInput *audioInput;               /*! Audio input object. */
+    QAudioInput  *audioInput;               /*! Audio input object. */
+    QAudioFormat  audioFormat;              /*! Audio format info. */
+    CAudioBuffer *audioBuffer;              /*! Audio buffer. */
 
     void createDeviceSelector();
+    void initialiseAudio();
 
 };
 
