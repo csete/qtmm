@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QAudioInput>
 #include <QList>
+#include "ssi.h"
 
 
 namespace Ui {
@@ -28,6 +29,8 @@ private:
 
     QLabel     *inputLabel;
     QComboBox  *inputSelector;  /*! Audio input delector. */
+    QWidget    *ssiSpacer;      /*! Spacer used to right align ssi. */
+    CSsi       *ssi;            /*! Input level indicator. */
 
     QList<QAudioDeviceInfo> inputDevices;  /*! List of available audio input devices. */
     QAudioInput *audioInput;               /*! Audio input object. */

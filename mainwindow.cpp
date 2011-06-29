@@ -12,12 +12,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createDeviceSelector();
 
+    /* create SSI and to toolbar */
+    ssiSpacer = new QWidget();
+    ssiSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->mainToolBar->addWidget(ssiSpacer);
+    ssi = new CSsi(this);
+    ui->mainToolBar->addWidget(ssi);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete inputLabel;
     delete inputSelector;
+    delete ssi;
     delete ui;
 }
 
