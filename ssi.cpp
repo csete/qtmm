@@ -62,13 +62,13 @@ void CSsi::paintEvent(QPaintEvent * /* event */)
 
     painter.setPen(Qt::black);
     painter.drawRect(QRect(painter.viewport().left()+10,
-                           painter.viewport().top()+10,
+                           painter.viewport().top()+9,
                            painter.viewport().right()-20,
-                           painter.viewport().bottom()-20));
+                           painter.viewport().bottom()-18));
     if (m_level == 0.0)
         return;
 
-    painter.setPen(Qt::red);
+    painter.setPen(Qt::darkGreen);
 
     int pos = ((painter.viewport().right()-20)-(painter.viewport().left()+11))*m_level;
     for (int i = 0; i < 10; ++i) {
