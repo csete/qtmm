@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ssi = new CSsi(this);
     ui->mainToolBar->addWidget(ssi);
 
+    connect(audioBuffer, SIGNAL(update(qreal)), ssi, SLOT(setLevel(qreal)));
 }
 
 MainWindow::~MainWindow()
@@ -72,7 +73,7 @@ void MainWindow::initialiseAudio()
     audioFormat.setCodec("audio/pcm");
 
     audioBuffer  = new CAudioBuffer(audioFormat, this);
-    //connect(m_audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+
 
 }
 
@@ -131,6 +132,9 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
         ui->actionDecode->setToolTip(tr("Start decoder"));
 
         ui->statusBar->showMessage(tr("Decoder stopped"));
+
+        /* reset input level indicator */
+        ssi->setLevel(0.0);
     }
 }
 

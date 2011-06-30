@@ -57,6 +57,7 @@ class CSsi : public QWidget
 public:
     CSsi(QWidget *parent = 0);
 
+public slots:
     void setLevel(qreal value);
 
 protected:

@@ -67,7 +67,7 @@ private:
     qreal m_level; // 0.0 <= m_level <= 1.0
 
 signals:
-    void update();
+    void update(qreal level);  /*! \brief Emit signal with new max level. */
 };
 
 

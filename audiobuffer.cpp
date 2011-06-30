@@ -154,7 +154,8 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
         m_level = qreal(maxValue) / m_maxAmplitude;
     }
 
-    emit update();
+    emit update(m_level);
+
     return len;
 }
 
