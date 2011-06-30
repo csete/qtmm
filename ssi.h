@@ -43,6 +43,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QObject>
+#include <QLinearGradient>
 
 
 /*! \brief Signal strength indicator.
@@ -66,6 +67,8 @@ protected:
 private:
     qreal m_level;
     QPixmap m_pixmap;
+    QLinearGradient m_gradient;
+    QBrush          m_brush;
 };
 
 

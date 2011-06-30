@@ -53,6 +53,14 @@ CSsi::CSsi(QWidget *parent)
     m_level = 0;
     setMinimumHeight(30);
     setMinimumWidth(150);
+
+    m_gradient = QLinearGradient(0, 0, 150, 0);
+    //m_gradient.setCoordinateMode(QGradient::StretchToDeviceMode);
+    m_gradient.setColorAt(0.4, Qt::darkGreen);
+    m_gradient.setColorAt(0.75, QColor(0xCB, 0xB8, 0x15, 0xFF));
+    m_gradient.setColorAt(1.0, QColor(0xD0, 0x1C, 0x12, 0xFF));
+
+    m_brush = QBrush(m_gradient);
 }
 
 
@@ -68,7 +76,9 @@ void CSsi::paintEvent(QPaintEvent * /* event */)
     if (m_level == 0.0)
         return;
 
-    painter.setPen(Qt::darkGreen);
+    //painter.setPen(Qt::darkGreen);
+
+    painter.setPen(QPen(m_brush, 1.0));
 
     int pos = ((painter.viewport().right()-20)-(painter.viewport().left()+11))*m_level;
     for (int i = 0; i < 10; ++i) {
