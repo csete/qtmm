@@ -1,6 +1,9 @@
 /****************************************************************************
 **
-** This file is based on the multimedia examples from the Qt toolkit.
+** This file is based on the multimedia examples from the Qt toolkit
+** and heavily modified by Alexandru Csete.
+**
+** The original code is:
 **
 ** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
