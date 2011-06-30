@@ -51,6 +51,7 @@ CSsi::CSsi(QWidget *parent)
     setStatusTip(tr("Input level indicator"));
 
     m_level = 0;
+    m_alpha = 0.15;
     setMinimumHeight(30);
     setMinimumWidth(150);
 
@@ -94,8 +95,36 @@ void CSsi::paintEvent(QPaintEvent * /* event */)
 }
 
 
+/*! \brief Set new time constant for exponential filter. */
+void CSsi::setAlpha(qreal value)
+{
+    if ((value > 1.0) || (value < 0.0))
+        return;
+
+    m_alpha = value;
+}
+
+
+/*! \brief Set new level.
+ *  \param value The new level between 0.0 and 1.0.
+ *
+ * If the new level is greater than the current level apply it immediately, if it is
+ * lower apply it through an exponential filter. This gives it smoother motion. The time
+ * constant of the filter is set using setAlpha().
+ */
 void CSsi::setLevel(qreal value)
 {
-    m_level = value;
+    if ((value > 1.0) || (value < 0.0))
+        return;
+
+    if (value > m_level) {
+        m_level = value;
+    }
+    else {
+        /* apply exponential filter */
+        m_level = m_alpha*value + (1.0-m_alpha)*m_level;
+        if (m_level > 1.0)
+            m_level = 1.0;
+    }
     repaint();
 }

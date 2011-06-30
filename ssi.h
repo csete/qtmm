@@ -60,12 +60,14 @@ public:
 
 public slots:
     void setLevel(qreal value);
+    void setAlpha(qreal value);
 
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
     qreal m_level;
+    qreal m_alpha;
     QPixmap m_pixmap;
     QLinearGradient m_gradient;
     QBrush          m_brush;
