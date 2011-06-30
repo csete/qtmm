@@ -122,6 +122,9 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
         Q_ASSERT(len % sampleBytes == 0);
         const int numSamples = len / sampleBytes;
 
+        /* clear buffer */
+        m_buffer.clear();
+
         quint16 maxValue = 0;
         const unsigned char *ptr = reinterpret_cast<const unsigned char *>(data);
 
@@ -145,6 +148,8 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
                         value = qAbs(qFromBigEndian<qint16>(ptr));
                 }
 
+                m_buffer.append(((float)value)/m_maxAmplitude);
+
                 maxValue = qMax(value, maxValue);
                 ptr += channelBytes;
             }
@@ -152,8 +157,13 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
 
         maxValue = qMin(maxValue, m_maxAmplitude);
         m_level = qreal(maxValue) / m_maxAmplitude;
+
+        /* send signal to decoder */
+        emit newData(m_buffer.data(), m_buffer.size());
+
     }
 
+    /* send signal to SSI */
     emit update(m_level);
 
     return len;

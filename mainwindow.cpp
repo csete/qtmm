@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(ssi);
 
     connect(audioBuffer, SIGNAL(update(qreal)), ssi, SLOT(setLevel(qreal)));
+    connect(audioBuffer, SIGNAL(newData(float*,int)), this, SLOT(samplesReceived(float*,int)));
 }
 
 MainWindow::~MainWindow()
@@ -138,3 +139,14 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
     }
 }
 
+
+/*! \brief Slot for receiveing new audio samples.
+ *  \param data The sample buffer.
+ *  \param length The number of samples in the buffer.
+ *
+ * Calls the afsk1200 decoder.
+ */
+void MainWindow::samplesReceived(float *data, const int length)
+{
+    //qDebug() << "Received " << length << " samples";
+}

@@ -43,6 +43,7 @@
 #include <QIODevice>
 #include <QAudioInput>
 #include <QAudioFormat>
+#include <QVarLengthArray>
 
 
 class CAudioBuffer : public QIODevice
@@ -66,8 +67,11 @@ private:
     quint16 m_maxAmplitude;
     qreal m_level; // 0.0 <= m_level <= 1.0
 
+    QVarLengthArray<float, 4096> m_buffer;
+
 signals:
     void update(qreal level);  /*! \brief Emit signal with new max level. */
+    void newData(float *data, const int len);
 };
 
 

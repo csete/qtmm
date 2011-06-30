@@ -24,6 +24,7 @@ public:
 
 private slots:
     void on_actionDecode_triggered(bool enabled);
+    void samplesReceived(float *data, const int length);
 
 private:
     Ui::MainWindow *ui;
