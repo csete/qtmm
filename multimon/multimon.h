@@ -123,6 +123,7 @@ struct demod_state {
 	} l1;
 };
 
+
 struct demod_param {
 	const char *name;
 	unsigned int samplerate;
@@ -133,26 +134,29 @@ struct demod_param {
 
 /* ---------------------------------------------------------------------- */
 
-extern const struct demod_param demod_poc5;
-extern const struct demod_param demod_poc12;
-extern const struct demod_param demod_poc24;
+
+//extern const struct demod_param demod_poc5;
+//extern const struct demod_param demod_poc12;
+//extern const struct demod_param demod_poc24;
 
 extern const struct demod_param demod_afsk1200;
-extern const struct demod_param demod_afsk2400;
-extern const struct demod_param demod_afsk2400_2;
 
-extern const struct demod_param demod_hapn4800;
-extern const struct demod_param demod_fsk9600;
+//extern const struct demod_param demod_afsk2400;
+//extern const struct demod_param demod_afsk2400_2;
 
-extern const struct demod_param demod_dtmf;
-extern const struct demod_param demod_zvei;
+//extern const struct demod_param demod_hapn4800;
+//extern const struct demod_param demod_fsk9600;
 
-extern const struct demod_param demod_scope;
+//extern const struct demod_param demod_dtmf;
+//extern const struct demod_param demod_zvei;
 
+//extern const struct demod_param demod_scope;
+
+/*
 #define ALL_DEMOD &demod_poc5, &demod_poc12, &demod_poc24, \
     &demod_afsk1200, &demod_afsk2400, &demod_afsk2400_2, &demod_hapn4800, \
     &demod_fsk9600, &demod_dtmf, &demod_zvei, &demod_scope
-
+*/
 /* ---------------------------------------------------------------------- */
 
 void verbprintf(int verb_level, const char *fmt, ...);
