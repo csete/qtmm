@@ -13,7 +13,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     multimon/hdlc.c \
-    multimon/demod_afsk12.c \
     multimon/costabf.c \
     audiobuffer.cpp \
     ssi.cpp \
