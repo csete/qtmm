@@ -23,6 +23,9 @@
 
 #include "multimon.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
+
 
 /* ---------------------------------------------------------------------- */
 
@@ -66,15 +69,18 @@ static const unsigned short crc_ccitt_table[] = {
     0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78
 };
 
+static int verbose_level = 2;
 
 void verbprintf(int verb_level, const char *fmt, ...)
 {
-    //va_list args;
+    va_list args;
 
-    //va_start(args, fmt);
-    //if (verb_level <= verbose_level)
-    //    vfprintf(stdout, fmt, args);
-    //va_end(args);
+    va_start(args, fmt);
+    if (verb_level <= verbose_level) {
+        vfprintf(stdout, fmt, args);
+        fflush(stdout);
+    }
+    va_end(args);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -95,12 +101,17 @@ static void ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned 
     unsigned char v1=1,cmd=0;
     unsigned char i,j;
 
+    verbprintf(6, "AX.25 PKT; L=%d\n", len);
+
     if (!bp || len < 10)
 		return;
 #if 1
-	if (!check_crc_ccitt(bp, len))
-		return;
+    if (!check_crc_ccitt(bp, len)) {
+        verbprintf(6, "CRC check failed\n");
+        return;
+    }
 #endif
+
 	len -= 2;
     if (bp[1] & 1) {
         /*
@@ -132,8 +143,8 @@ static void ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned 
         len -= 7;
     } else {
         /*
-                 * normal header
-                 */
+         * normal header
+         */
         if (len < 15)
 			return;
         if ((bp[6] & 0x80) != (bp[13] & 0x80)) {

@@ -2,6 +2,7 @@
 #include <QtMultimedia>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "multimon/multimon.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -22,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(audioBuffer, SIGNAL(update(qreal)), ssi, SLOT(setLevel(qreal)));
     connect(audioBuffer, SIGNAL(newData(float*,int)), this, SLOT(samplesReceived(float*,int)));
+
+    /* initialise decoders */
+    afsk1200_state = (demod_state *) malloc(sizeof(demod_state));
 }
 
 MainWindow::~MainWindow()
@@ -31,6 +35,8 @@ MainWindow::~MainWindow()
     delete audioBuffer;
     delete ssi;
     delete ui;
+
+    free(afsk1200_state);
 }
 
 
@@ -79,6 +85,7 @@ void MainWindow::initialiseAudio()
 }
 
 
+
 /*! \brief Decoder status changed
  *  \param enabled True if the decoder has been enabled, false if it has been disabled.
  */
@@ -94,7 +101,8 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
             audioFormat = info.nearestFormat(audioFormat);
         }
 
-#if 1
+#if 0
+        qDebug() << "----------------------------------------------------";
         qDebug() << "Input device: " << inputDevices.at(inputSelector->currentIndex()).deviceName();
         qDebug() << "      Codecs: " << inputDevices.at(inputSelector->currentIndex()).supportedCodecs();
         qDebug() << "    Channels: " << inputDevices.at(inputSelector->currentIndex()).supportedChannelCounts();
@@ -102,8 +110,24 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
         qDebug() << "Sample types: " << inputDevices.at(inputSelector->currentIndex()).supportedSampleTypes();
         qDebug() << "Sample sizes: " << inputDevices.at(inputSelector->currentIndex()).supportedSampleSizes();
         qDebug() << " Byte orders: " << inputDevices.at(inputSelector->currentIndex()).supportedByteOrders();
+        qDebug() << "----------------------------------------------------";
 #endif
 
+#if 0
+        qDebug() << "----------------------------------------------------";
+        qDebug() << "      Codec: " << audioFormat.codec();
+        qDebug() << " Byte order: " << audioFormat.byteOrder();
+        qDebug() << "Sample rate: " << audioFormat.sampleRate();
+        qDebug() << "Sample size: " << audioFormat.sampleSize();
+        qDebug() << "Sample type: " << audioFormat.sampleType();
+        qDebug() << "   Channels: " << audioFormat.channelCount();
+        qDebug() << "----------------------------------------------------";
+#endif
+
+        /* initialise decoder; looks weird but dmeods were organised in array in multimon */
+        memset(afsk1200_state, 0, sizeof(demod_state));
+        afsk1200_state->dem_par = &demod_afsk1200;
+        demod_afsk1200.init(afsk1200_state);
 
         audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), audioFormat, this);
 
@@ -136,6 +160,7 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
 
         /* reset input level indicator */
         ssi->setLevel(0.0);
+
     }
 }
 
@@ -146,7 +171,22 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
  *
  * Calls the afsk1200 decoder.
  */
-void MainWindow::samplesReceived(float *data, const int length)
+void MainWindow::samplesReceived(float *buffer, const int length)
 {
+    int overlap = 18;
+    int i;
+
+    for (i = 0; i < length/*-overlap*/; i++) {
+        tmpbuf.append(buffer[i]);
+    }
+
     //qDebug() << "Received " << length << " samples";
+    demod_afsk1200.demod(afsk1200_state, tmpbuf.data(), length/*-overlap*/);
+
+    /* clear tmpbuf and store "overlap" */
+    tmpbuf.clear();
+    for (i = length-overlap; i < length; i++) {
+        tmpbuf.append(buffer[i]);
+    }
+
 }

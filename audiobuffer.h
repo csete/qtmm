@@ -66,10 +66,10 @@ public:
 
 private:
     const QAudioFormat m_format;
-    quint16 m_maxAmplitude;
+    qint16 m_maxAmplitude;
     qreal m_level; // 0.0 <= m_level <= 1.0
 
-    QVarLengthArray<float, 4096> m_buffer;
+    QVarLengthArray<float, 8192> m_buffer;
 
 signals:
     void update(qreal level);  /*! \brief Emit signal with new max level. */

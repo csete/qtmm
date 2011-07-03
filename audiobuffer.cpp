@@ -84,6 +84,8 @@ CAudioBuffer::CAudioBuffer(const QAudioFormat &format, QObject *parent)
         qWarning() << "Unsupported audio format.";
         break;
     }
+
+    qDebug() << "CAudioBuffer::m_maxAmplitude = " << m_maxAmplitude;
 }
 
 
@@ -127,12 +129,12 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
         /* clear buffer */
         m_buffer.clear();
 
-        quint16 maxValue = 0;
+        qint16 maxValue = 0;
         const unsigned char *ptr = reinterpret_cast<const unsigned char *>(data);
 
         for (int i = 0; i < numSamples; ++i) {
             for(int j = 0; j < m_format.channels(); ++j) {
-                quint16 value = 0;
+                qint16 value = 0;
 
                 if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::UnSignedInt) {
                     value = *reinterpret_cast<const quint8*>(ptr);
@@ -145,14 +147,17 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
                         value = qFromBigEndian<quint16>(ptr);
                 } else if (m_format.sampleSize() == 16 && m_format.sampleType() == QAudioFormat::SignedInt) {
                     if (m_format.byteOrder() == QAudioFormat::LittleEndian)
-                        value = qAbs(qFromLittleEndian<qint16>(ptr));
+                        //value = qAbs(qFromLittleEndian<qint16>(ptr));
+                        value = qFromLittleEndian<qint16>(ptr);
                     else
-                        value = qAbs(qFromBigEndian<qint16>(ptr));
+                        //value = qAbs(qFromBigEndian<qint16>(ptr));
+                        value = qFromBigEndian<qint16>(ptr);
                 }
 
-                m_buffer.append(((float)value)/m_maxAmplitude);
+                m_buffer.append(((float)value)*1.0/m_maxAmplitude);
+                //qDebug() << ((float)value)/m_maxAmplitude;
 
-                maxValue = qMax(value, maxValue);
+                maxValue = qMax(qAbs(value), maxValue);
                 ptr += channelBytes;
             }
         }

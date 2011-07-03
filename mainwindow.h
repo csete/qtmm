@@ -8,6 +8,7 @@
 #include <QList>
 #include "audiobuffer.h"
 #include "ssi.h"
+#include "multimon/multimon.h"
 
 
 namespace Ui {
@@ -24,7 +25,7 @@ public:
 
 private slots:
     void on_actionDecode_triggered(bool enabled);
-    void samplesReceived(float *data, const int length);
+    void samplesReceived(float *buffer, const int length);
 
 private:
     Ui::MainWindow *ui;
@@ -39,8 +40,13 @@ private:
     QAudioFormat  audioFormat;              /*! Audio format info. */
     CAudioBuffer *audioBuffer;              /*! Audio buffer. */
 
+    demod_state  *afsk1200_state;          /*! AFSK1200 demodulator state. */
+    QVarLengthArray<float, 8192> tmpbuf;   /*! Needed to remember "overlap" smples. */
+
     void createDeviceSelector();
     void initialiseAudio();
+
+    void process(QByteArray buff);
 
 };
 
