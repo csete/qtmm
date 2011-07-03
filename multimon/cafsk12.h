@@ -134,6 +134,7 @@ public:
     void reset();
 
 signals:
+    void newMessage(const QString &message);
 
 public slots:
 
@@ -149,7 +150,7 @@ private:
     void hdlc_init(struct demod_state *s);
     void hdlc_rxbit(struct demod_state *s, int bit);
     void verbprintf(int verb_level, const char *fmt, ...);
-    void ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned int len);
+    void ax25_disp_packet(unsigned char *bp, unsigned int len);
 };
 
 #endif // CAFSK12_H

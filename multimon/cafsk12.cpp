@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <math.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -140,7 +141,7 @@ void CAfsk12::hdlc_rxbit(struct demod_state *s, int bit)
     s->l2.hdlc.rxbitstream |= !!bit;
     if ((s->l2.hdlc.rxbitstream & 0xff) == 0x7e) {
         if (s->l2.hdlc.rxstate && (s->l2.hdlc.rxptr - s->l2.hdlc.rxbuf) > 2)
-            ax25_disp_packet(s, s->l2.hdlc.rxbuf, s->l2.hdlc.rxptr - s->l2.hdlc.rxbuf);
+            ax25_disp_packet(s->l2.hdlc.rxbuf, s->l2.hdlc.rxptr - s->l2.hdlc.rxbuf);
         s->l2.hdlc.rxstate = 1;
         s->l2.hdlc.rxptr = s->l2.hdlc.rxbuf;
         s->l2.hdlc.rxbitbuf = 0x80;
@@ -195,8 +196,9 @@ static inline int check_crc_ccitt(const unsigned char *buf, int cnt)
 }
 
 
-void CAfsk12::ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigned int len)
+void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
 {
+    QString message;
     unsigned char v1=1,cmd=0;
     unsigned char i,j;
 
@@ -218,27 +220,49 @@ void CAfsk12::ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigne
                  */
         v1 = 0;
         cmd = (bp[1] & 2) != 0;
-        //verbprintf(0, "%s: fm ? to ", s->dem_par->name);
+
         verbprintf(0, "AFSK1200: fm ? to ");
+        message.append("AFSK1200: fm ? to ");
+
         i = (bp[2] >> 2) & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         i = ((bp[2] << 4) | ((bp[3] >> 4) & 0xf)) & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         i = ((bp[3] << 2) | ((bp[4] >> 6) & 3)) & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         i = bp[4] & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         i = (bp[5] >> 2) & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         i = ((bp[5] << 4) | ((bp[6] >> 4) & 0xf)) & 0x3f;
-        if (i)
+        if (i) {
             verbprintf(0, "%c",i+0x20);
+            message.append(QChar(i+0x20));
+        }
+
         verbprintf(0, "-%u QSO Nr %u", bp[6] & 0xf, (bp[0] << 6) | (bp[1] >> 2));
+        message.append(QString("-%1 QSO Nr %1").arg(bp[6] & 0xf).arg((bp[0] << 6) | (bp[1] >> 2)));
+
         bp += 7;
         len -= 7;
     } else {
@@ -246,116 +270,167 @@ void CAfsk12::ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigne
          * normal header
          */
         if (len < 15)
-            return;
+            goto finished;
+
         if ((bp[6] & 0x80) != (bp[13] & 0x80)) {
             v1 = 0;
             cmd = (bp[6] & 0x80);
         }
-        //verbprintf(0, "%s: fm ", s->dem_par->name);
+
         verbprintf(0, "AFSK1200: fm ");
+        message.append("AFSK1200: fm ");
+
         for(i = 7; i < 13; i++)
-            if ((bp[i] &0xfe) != 0x40)
+            if ((bp[i] &0xfe) != 0x40) {
                 verbprintf(0, "%c",bp[i] >> 1);
+                message.append(QChar(bp[i] >> 1));
+            }
+
         verbprintf(0, "-%u to ",(bp[13] >> 1) & 0xf);
+        message.append(QString("-%1 to ").arg((bp[13] >> 1) & 0xf));
+
         for(i = 0; i < 6; i++)
-            if ((bp[i] &0xfe) != 0x40)
+            if ((bp[i] &0xfe) != 0x40) {
                 verbprintf(0, "%c",bp[i] >> 1);
+                message.append(QChar(bp[i] >> 1));
+            }
+
         verbprintf(0, "-%u",(bp[6] >> 1) & 0xf);
+        message.append(QString("-%1").arg((bp[6] >> 1) & 0xf));
+
         bp += 14;
         len -= 14;
-        if ((!(bp[-1] & 1)) && (len >= 7))
+        if ((!(bp[-1] & 1)) && (len >= 7)) {
             verbprintf(0, " via ");
+            message.append(" via ");
+        }
+
         while ((!(bp[-1] & 1)) && (len >= 7)) {
             for(i = 0; i < 6; i++)
-                if ((bp[i] &0xfe) != 0x40)
+                if ((bp[i] &0xfe) != 0x40) {
                     verbprintf(0, "%c",bp[i] >> 1);
+                    message.append(QChar(bp[i] >> 1));
+                }
+
             verbprintf(0, "-%u",(bp[6] >> 1) & 0xf);
+            message.append(QString("-%1").arg((bp[6] >> 1) & 0xf));
+
             bp += 7;
             len -= 7;
-            if ((!(bp[-1] & 1)) && (len >= 7))
+            if ((!(bp[-1] & 1)) && (len >= 7)) {
                 verbprintf(0, ",");
+                message.append(",");
+            }
         }
     }
     if(!len)
-        return;
+        goto finished;
+
     i = *bp++;
     len--;
     j = v1 ? ((i & 0x10) ? '!' : ' ') :
              ((i & 0x10) ? (cmd ? '+' : '-') : (cmd ? '^' : 'v'));
     if (!(i & 1)) {
-        /*
-                 * Info frame
-                 */
+        /* Info frame */
         verbprintf(0, " I%u%u%c",(i >> 5) & 7,(i >> 1) & 7,j);
-    } else if (i & 2) {
-        /*
-                 * U frame
-                 */
+        message.append(QString(" I%1%2%3").arg((i >> 5) & 7).arg((i >> 1) & 7).arg(j));
+    }
+    else if (i & 2) {
+        /* U frame */
         switch (i & (~0x10)) {
         case 0x03:
             verbprintf(0, " UI%c",j);
+            message.append(QString(" UI%1").arg(j));
             break;
         case 0x2f:
             verbprintf(0, " SABM%c",j);
+            message.append(QString(" SABM%1").arg(j));
             break;
         case 0x43:
             verbprintf(0, " DISC%c",j);
+            message.append(QString(" DISC%1").arg(j));
             break;
         case 0x0f:
             verbprintf(0, " DM%c",j);
+            message.append(QString(" DM%1").arg(j));
             break;
         case 0x63:
             verbprintf(0, " UA%c",j);
+            message.append(QString(" UA%1").arg(j));
             break;
         case 0x87:
             verbprintf(0, " FRMR%c",j);
+            message.append(QString(" FRMR%1").arg(j));
             break;
         default:
             verbprintf(0, " unknown U (0x%x)%c",i & (~0x10),j);
+            message.append(QString(" unknown U (0x%1)%2").arg(i & (~0x10),0,16).arg(j));
             break;
         }
     } else {
-        /*
-                 * supervisory
-                 */
+        /* supervisory */
         switch (i & 0xf) {
         case 0x1:
             verbprintf(0, " RR%u%c",(i >> 5) & 7,j);
+            message.append(QString(" RR%1%2").arg((i >> 5) & 7).arg(j));
             break;
         case 0x5:
             verbprintf(0, " RNR%u%c",(i >> 5) & 7,j);
+            message.append(QString(" RNR%1%2").arg((i >> 5) & 7).arg(j));
             break;
         case 0x9:
             verbprintf(0, " REJ%u%c",(i >> 5) & 7,j);
+            message.append(QString(" REJ%1%2").arg((i >> 5) & 7).arg(j));
             break;
         default:
-            verbprintf(0, " unknown S (0x%x)%u%c", i & 0xf,
-                       (i >> 5) & 7, j);
+            verbprintf(0, " unknown S (0x%x)%u%c", i & 0xf, (i >> 5) & 7, j);
+            message.append(QString(" unknown S (0x%1)%2%3").arg(i & 0xf,0,16).arg((i >> 5) & 7).arg(j));
             break;
         }
     }
+
     if (!len) {
         verbprintf(0, "\n");
-        return;
+        //message.append("\n");
+        goto finished;
     }
+
     verbprintf(0, " pid=%02X\n", *bp++);
+    message.append(QString(" pid=%1\n").arg(*bp,2,16));
+
     len--;
     j = 0;
     while (len) {
         i = *bp++;
-        if ((i >= 32) && (i < 128))
+        if ((i >= 32) && (i < 128)) {
             verbprintf(0, "%c",i);
+            message.append(QChar(i));
+        }
         else if (i == 13) {
-            if (j)
+            if (j) {
                 verbprintf(0, "\n");
+                //message.append("\n");
+            }
             j = 0;
-        } else
+        }
+        else {
             verbprintf(0, ".");
+            message.append(".");
+        }
+
         if (i >= 32)
             j = 1;
         len--;
     }
-    if (j)
+    if (j) {
         verbprintf(0, "\n");
+        //message.append("\n");
+    }
+
+    /* I just secured myself a ticket to hell */
+    finished:
+    if (message.size() > 0) {
+        emit newMessage(message);
+    }
 }
 

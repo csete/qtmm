@@ -26,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* initialise decoders */
     afsk12 = new CAfsk12();
+
+    connect(afsk12, SIGNAL(newMessage(QString)), ui->textView, SLOT(appendPlainText(QString)));
+
     //afsk1200_state = (demod_state *) malloc(sizeof(demod_state));
 }
 
