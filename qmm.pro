@@ -16,13 +16,15 @@ SOURCES += main.cpp\
     multimon/demod_afsk12.c \
     multimon/costabf.c \
     audiobuffer.cpp \
-    ssi.cpp
+    ssi.cpp \
+    multimon/cafsk12.cpp
 
 HEADERS  += mainwindow.h \
     multimon/multimon.h \
     multimon/filter.h \
     multimon/filter-i386.h \
     audiobuffer.h \
-    ssi.h
+    ssi.h \
+    multimon/cafsk12.h
 
 FORMS    += mainwindow.ui
