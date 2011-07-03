@@ -218,7 +218,8 @@ void CAfsk12::ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigne
                  */
         v1 = 0;
         cmd = (bp[1] & 2) != 0;
-        verbprintf(0, "%s: fm ? to ", s->dem_par->name);
+        //verbprintf(0, "%s: fm ? to ", s->dem_par->name);
+        verbprintf(0, "AFSK1200: fm ? to ");
         i = (bp[2] >> 2) & 0x3f;
         if (i)
             verbprintf(0, "%c",i+0x20);
@@ -250,7 +251,8 @@ void CAfsk12::ax25_disp_packet(struct demod_state *s, unsigned char *bp, unsigne
             v1 = 0;
             cmd = (bp[6] & 0x80);
         }
-        verbprintf(0, "%s: fm ", s->dem_par->name);
+        //verbprintf(0, "%s: fm ", s->dem_par->name);
+        verbprintf(0, "AFSK1200: fm ");
         for(i = 7; i < 13; i++)
             if ((bp[i] &0xfe) != 0x40)
                 verbprintf(0, "%c",bp[i] >> 1);

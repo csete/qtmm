@@ -2,7 +2,7 @@
 #include <QtMultimedia>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "multimon/multimon.h"
+//#include "multimon/multimon.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(audioBuffer, SIGNAL(newData(float*,int)), this, SLOT(samplesReceived(float*,int)));
 
     /* initialise decoders */
-    afsk1200_state = (demod_state *) malloc(sizeof(demod_state));
+    afsk12 = new CAfsk12();
+    //afsk1200_state = (demod_state *) malloc(sizeof(demod_state));
 }
 
 MainWindow::~MainWindow()
@@ -34,9 +35,10 @@ MainWindow::~MainWindow()
     delete inputSelector;
     delete audioBuffer;
     delete ssi;
+    delete afsk12;
     delete ui;
 
-    free(afsk1200_state);
+    //free(afsk1200_state);
 }
 
 
@@ -125,9 +127,10 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
 #endif
 
         /* initialise decoder; looks weird but dmeods were organised in array in multimon */
-        memset(afsk1200_state, 0, sizeof(demod_state));
+        afsk12->reset();
+        /*memset(afsk1200_state, 0, sizeof(demod_state));
         afsk1200_state->dem_par = &demod_afsk1200;
-        demod_afsk1200.init(afsk1200_state);
+        demod_afsk1200.init(afsk1200_state);*/
 
         audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), audioFormat, this);
 
@@ -181,7 +184,8 @@ void MainWindow::samplesReceived(float *buffer, const int length)
     }
 
     //qDebug() << "Received " << length << " samples";
-    demod_afsk1200.demod(afsk1200_state, tmpbuf.data(), length/*-overlap*/);
+    //demod_afsk1200.demod(afsk1200_state, tmpbuf.data(), length/*-overlap*/);
+    afsk12->demod(tmpbuf.data(), length);
 
     /* clear tmpbuf and store "overlap" */
     tmpbuf.clear();

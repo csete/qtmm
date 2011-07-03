@@ -8,7 +8,8 @@
 #include <QList>
 #include "audiobuffer.h"
 #include "ssi.h"
-#include "multimon/multimon.h"
+#include "multimon/cafsk12.h"
+//#include "multimon/multimon.h"
 
 
 namespace Ui {
@@ -40,7 +41,8 @@ private:
     QAudioFormat  audioFormat;              /*! Audio format info. */
     CAudioBuffer *audioBuffer;              /*! Audio buffer. */
 
-    demod_state  *afsk1200_state;          /*! AFSK1200 demodulator state. */
+    CAfsk12      *afsk12;
+
     QVarLengthArray<float, 8192> tmpbuf;   /*! Needed to remember "overlap" smples. */
 
     void createDeviceSelector();
