@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     multimon/cafsk12.cpp
 
 HEADERS  += mainwindow.h \
-    multimon/multimon.h \
     multimon/filter.h \
     multimon/filter-i386.h \
     audiobuffer.h \
