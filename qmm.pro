@@ -12,7 +12,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    multimon/hdlc.c \
     multimon/costabf.c \
     audiobuffer.cpp \
     ssi.cpp \
