@@ -19,7 +19,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTextEdit" name="textView">
+     <widget class="QPlainTextEdit" name="textView">
       <property name="readOnly">
        <bool>true</bool>
       </property>
