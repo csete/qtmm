@@ -35,7 +35,11 @@ MainWindow::~MainWindow()
 {
     delete inputLabel;
     delete inputSelector;
-    delete audioInput;
+    if (audioInput) {
+        audioBuffer->stop();
+        audioInput->stop();
+        delete audioInput;
+    }
     delete audioBuffer;
     delete ssi;
     delete afsk12;
@@ -130,9 +134,6 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
 
         /* initialise decoder; looks weird but dmeods were organised in array in multimon */
         afsk12->reset();
-        /*memset(afsk1200_state, 0, sizeof(demod_state));
-        afsk1200_state->dem_par = &demod_afsk1200;
-        demod_afsk1200.init(afsk1200_state);*/
 
         audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), audioFormat, this);
 
@@ -185,8 +186,6 @@ void MainWindow::samplesReceived(float *buffer, const int length)
         tmpbuf.append(buffer[i]);
     }
 
-    //qDebug() << "Received " << length << " samples";
-    //demod_afsk1200.demod(afsk1200_state, tmpbuf.data(), length/*-overlap*/);
     afsk12->demod(tmpbuf.data(), length);
 
     /* clear tmpbuf and store "overlap" */
