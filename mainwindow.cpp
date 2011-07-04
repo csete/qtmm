@@ -29,19 +29,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(afsk12, SIGNAL(newMessage(QString)), ui->textView, SLOT(appendPlainText(QString)));
 
-    //afsk1200_state = (demod_state *) malloc(sizeof(demod_state));
 }
 
 MainWindow::~MainWindow()
 {
     delete inputLabel;
     delete inputSelector;
+    delete audioInput;
     delete audioBuffer;
     delete ssi;
     delete afsk12;
     delete ui;
 
-    //free(afsk1200_state);
 }
 
 
@@ -196,4 +195,34 @@ void MainWindow::samplesReceived(float *buffer, const int length)
         tmpbuf.append(buffer[i]);
     }
 
+}
+
+
+/** \brief Action: About AFSK1200 Decoder
+  *
+  * This slot is called when the user activates the
+  * Help|About menu item (or AFSK1200 Decoder|About on Mac)
+  */
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::about(this, tr("About AFSK1200 Decoder"),
+                       tr("<p>AFSK1200 Decoder %1</p>"
+                          "<p>A simple AFSK1200 decoder that uses the computer's soundcard "
+                          "for input. It can decode AX.25 packets and displays them in a text view.</p>"
+                          "<p>AFSK1200 is the modulation mode used by radio amateurs for packet radio "
+                          "transmissions, including APRS.</p>"
+                          "<p>AFSK1200 decoder is written using the Qt toolkit (see About Qt) and is avaialble "
+                          "for Linux, Mac and Windows. You can download the latest version from the "
+                          "<a href='http://www.oz9aec.net/'>website</a>."
+                          ).arg(VERSION));
+}
+
+/** \brief Action: About Qt
+  *
+  * This slot is called when the user activates the
+  *   Help|About Qt menu item (or AFSK Decoder|About Qt on Mac)
+  */
+void MainWindow::on_actionAboutQt_triggered()
+{
+    QMessageBox::aboutQt(this, tr("About Qt"));
 }
