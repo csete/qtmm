@@ -6,12 +6,33 @@
 
 QT       += core gui multimedia
 
-TARGET = qmm
+
 TEMPLATE = app
+
+macx {
+    TARGET = "AFSK1200 Decoder"
+} else {
+    TARGET = afsk1200dec
+}
+
+
+# disable debug messages in release
+CONFIG(debug, debug|release) {
+    # Define version string (see below for releases)
+    VER = $$system(git describe --abbrev=8)
+} else {
+    DEFINES += QT_NO_DEBUG
+    DEFINES += QT_NO_DEBUG_OUTPUT
+    VER = 1.1
+}
+
+# Tip from: http://www.qtcentre.org/wiki/index.php?title=Version_numbering_using_QMake
+VERSTR = '\\"$${VER}\\"'          # place quotes around the version string
+DEFINES += VERSION=\"$${VERSTR}\" # create a VERSION macro containing the version string
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     multimon/costabf.c \
     audiobuffer.cpp \
     ssi.cpp \
