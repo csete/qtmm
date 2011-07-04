@@ -340,31 +340,31 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
         switch (i & (~0x10)) {
         case 0x03:
             verbprintf(0, " UI%c",j);
-            message.append(QString(" UI%1").arg(j));
+            message.append(QString(" UI%1").arg(QChar(j)));
             break;
         case 0x2f:
             verbprintf(0, " SABM%c",j);
-            message.append(QString(" SABM%1").arg(j));
+            message.append(QString(" SABM%1").arg(QChar(j)));
             break;
         case 0x43:
             verbprintf(0, " DISC%c",j);
-            message.append(QString(" DISC%1").arg(j));
+            message.append(QString(" DISC%1").arg(QChar(j)));
             break;
         case 0x0f:
             verbprintf(0, " DM%c",j);
-            message.append(QString(" DM%1").arg(j));
+            message.append(QString(" DM%1").arg(QChar(j)));
             break;
         case 0x63:
             verbprintf(0, " UA%c",j);
-            message.append(QString(" UA%1").arg(j));
+            message.append(QString(" UA%1").arg(QChar(j)));
             break;
         case 0x87:
             verbprintf(0, " FRMR%c",j);
-            message.append(QString(" FRMR%1").arg(j));
+            message.append(QString(" FRMR%1").arg(QChar(j)));
             break;
         default:
             verbprintf(0, " unknown U (0x%x)%c",i & (~0x10),j);
-            message.append(QString(" unknown U (0x%1)%2").arg(i & (~0x10),0,16).arg(j));
+            message.append(QString(" unknown U (0x%1)%2").arg(i & (~0x10),0,16).arg(QChar(j)));
             break;
         }
     } else {
@@ -372,19 +372,19 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
         switch (i & 0xf) {
         case 0x1:
             verbprintf(0, " RR%u%c",(i >> 5) & 7,j);
-            message.append(QString(" RR%1%2").arg((i >> 5) & 7).arg(j));
+            message.append(QString(" RR%1%2").arg((i >> 5) & 7).arg(QChar(j)));
             break;
         case 0x5:
             verbprintf(0, " RNR%u%c",(i >> 5) & 7,j);
-            message.append(QString(" RNR%1%2").arg((i >> 5) & 7).arg(j));
+            message.append(QString(" RNR%1%2").arg((i >> 5) & 7).arg(QChar(j)));
             break;
         case 0x9:
             verbprintf(0, " REJ%u%c",(i >> 5) & 7,j);
-            message.append(QString(" REJ%1%2").arg((i >> 5) & 7).arg(j));
+            message.append(QString(" REJ%1%2").arg((i >> 5) & 7).arg(QChar(j)));
             break;
         default:
             verbprintf(0, " unknown S (0x%x)%u%c", i & 0xf, (i >> 5) & 7, j);
-            message.append(QString(" unknown S (0x%1)%2%3").arg(i & 0xf,0,16).arg((i >> 5) & 7).arg(j));
+            message.append(QString(" unknown S (0x%1)%2%3").arg(i & 0xf,0,16).arg((i >> 5) & 7).arg(QChar(j)));
             break;
         }
     }
@@ -395,8 +395,9 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
         goto finished;
     }
 
-    verbprintf(0, " pid=%02X\n", *bp++);
-    message.append(QString(" pid=%1\n").arg(*bp,2,16));
+    i = *bp++;
+    verbprintf(0, " pid=%02X\n", i);
+    message.append(QString(" pid=%1\n").arg(i,0,16).toUpper());
 
     len--;
     j = 0;
