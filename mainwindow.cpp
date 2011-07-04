@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QtMultimedia>
+#include <QAudio>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //#include "multimon/multimon.h"
@@ -139,7 +140,7 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
 
         /** TODO: cpnnect signals and slots */
         //connect(audioInput, SIGNAL(notify()), SLOT(notified()));
-        //connect(audioInput, SIGNAL(stateChanged(QAudio::State)), SLOT(stateChanged(QAudio::State)));
+        connect(audioInput, SIGNAL(stateChanged(QAudio::State)), SLOT(audioStateChanged(QAudio::State)));
         audioBuffer->start();
         audioInput->start(audioBuffer);
 
@@ -196,6 +197,14 @@ void MainWindow::samplesReceived(float *buffer, const int length)
 
 }
 
+
+/*! \brief Slot for audio input state changes.
+ *  \param state The new state of the audio input.
+ */
+void MainWindow::audioStateChanged(QAudio::State state)
+{
+    qDebug() << "Audio state change: " << state;
+}
 
 /** \brief Action: About AFSK1200 Decoder
   *
