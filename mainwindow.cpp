@@ -13,6 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    /* select font for text viewer */
+#ifdef Q_OS_MAC
+    ui->textView->setFont(QFont("Monaco", 12));
+#else
+    ui->textView->setFont(QFont("Monospace", 9));
+#endif
+
     initialiseAudio();
     createDeviceSelector();
 
