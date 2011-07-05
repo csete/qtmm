@@ -1,6 +1,7 @@
 #include <QDebug>
-#include <QtMultimedia>
+//#include <QtMultimedia>
 #include <QAudio>
+#include <QMessageBox>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //#include "multimon/multimon.h"
