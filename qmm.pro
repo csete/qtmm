@@ -5,8 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui
-#multimedia
-
 
 #
 # Ubuntu 10.10 and 11.04: changes due to some strangeness in Debian Qt packages
@@ -36,8 +34,9 @@ linux-g++ {
           QT += multimedia
        }
     }
+} else {
+    QT += multimedia
 }
-
 
 TEMPLATE = app
 
