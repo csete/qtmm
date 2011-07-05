@@ -37,19 +37,19 @@ MainWindow::MainWindow(QWidget *parent) :
     afsk12 = new CAfsk12();
 
     connect(afsk12, SIGNAL(newMessage(QString)), ui->textView, SLOT(appendPlainText(QString)));
-
 }
 
 MainWindow::~MainWindow()
 {
-    delete inputLabel;
-    delete inputSelector;
-    if (audioInput) {
+    if (ui->actionDecode->isChecked()) {
         audioBuffer->stop();
         audioInput->stop();
         delete audioInput;
     }
     delete audioBuffer;
+
+    delete inputLabel;
+    delete inputSelector;
     delete ssi;
     delete afsk12;
     delete ui;
@@ -211,7 +211,15 @@ void MainWindow::samplesReceived(float *buffer, const int length)
  */
 void MainWindow::audioStateChanged(QAudio::State state)
 {
-    qDebug() << "Audio state change: " << state;
+    qDebug() << "Audio state change: " << state << " ERROR: " << audioInput->error();
+#ifdef Q_OS_MAC
+    /* On OSX audio stops due to underrun when window is minimized */
+    if (state == 3) {
+        audioBuffer->stop();
+        audioBuffer->start();
+        audioInput->start(audioBuffer);
+    }
+#endif
 }
 
 /** \brief Action: About AFSK1200 Decoder
