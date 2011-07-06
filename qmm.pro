@@ -77,3 +77,6 @@ HEADERS  += mainwindow.h \
     multimon/cafsk12.h
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES += \
+    README.txt
