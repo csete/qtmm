@@ -80,6 +80,7 @@
    </attribute>
    <addaction name="actionDecode"/>
    <addaction name="separator"/>
+   <addaction name="actionSave"/>
    <addaction name="actionClear"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -123,6 +124,10 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset resource="qmm.qrc">
+     <normaloff>:/icons/icons/save.png</normaloff>:/icons/icons/save.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
