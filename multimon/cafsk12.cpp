@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QTime>
 #include <math.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -213,6 +214,9 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
     }
 #endif
 
+    /* get current time that will be prepended to packet display */
+    QTime time = QTime::currentTime();
+
     len -= 2;
     if (bp[1] & 1) {
         /*
@@ -222,7 +226,7 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
         cmd = (bp[1] & 2) != 0;
 
         verbprintf(0, "AFSK1200: fm ? to ");
-        message.append("AFSK1200: fm ? to ");
+        message.append(QString("%1$ fm ? to ").arg(time.toString("hh:mm:ss")));
 
         i = (bp[2] >> 2) & 0x3f;
         if (i) {
@@ -278,7 +282,7 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
         }
 
         verbprintf(0, "AFSK1200: fm ");
-        message.append("AFSK1200: fm ");
+        message.append(QString("%1$ fm ").arg(time.toString("hh:mm:ss")));
 
         for(i = 7; i < 13; i++)
             if ((bp[i] &0xfe) != 0x40) {
@@ -397,7 +401,7 @@ void CAfsk12::ax25_disp_packet(unsigned char *bp, unsigned int len)
 
     i = *bp++;
     verbprintf(0, " pid=%02X\n", i);
-    message.append(QString(" pid=%1\n").arg(i,0,16).toUpper());
+    message.append(QString(" pid=%1\n          ").arg(i,0,16).toUpper());
 
     len--;
     j = 0;
