@@ -2,6 +2,9 @@
 //#include <QtMultimedia>
 #include <QAudio>
 #include <QMessageBox>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QDir>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //#include "multimon/multimon.h"
@@ -146,7 +149,7 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
 
         audioInput = new QAudioInput(inputDevices.at(inputSelector->currentIndex()), audioFormat, this);
 
-        /** TODO: cpnnect signals and slots */
+        /** TODO: connect signals and slots */
         //connect(audioInput, SIGNAL(notify()), SLOT(notified()));
         connect(audioInput, SIGNAL(stateChanged(QAudio::State)), SLOT(audioStateChanged(QAudio::State)));
         audioBuffer->start();
@@ -222,11 +225,40 @@ void MainWindow::audioStateChanged(QAudio::State state)
 #endif
 }
 
-/** \brief Action: About AFSK1200 Decoder
-  *
-  * This slot is called when the user activates the
-  * Help|About menu item (or AFSK1200 Decoder|About on Mac)
-  */
+
+/*! \brief Action: Save
+ *
+ * This slot is called when the user activates the File|Save menu item.
+ * It asks for a file name, then saves the contents of the text viewer
+ * to a plain text file.
+ */
+void MainWindow::on_actionSave_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    QDir::homePath(),
+                                                    tr("Text Files (*.txt)"));
+
+    if (fileName.isEmpty()) {
+        qDebug() << "Save as cancelled by user";
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Error creating file: " << fileName;
+        return;
+    }
+
+    QTextStream out(&file);
+    out << ui->textView->toPlainText();
+    file.close();
+}
+
+/*! \brief Action: About AFSK1200 Decoder
+ *
+ * This slot is called when the user activates the
+ * Help|About menu item (or AFSK1200 Decoder|About on Mac)
+ */
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::about(this, tr("About AFSK1200 Decoder"),
@@ -241,11 +273,11 @@ void MainWindow::on_actionAbout_triggered()
                           ).arg(VERSION));
 }
 
-/** \brief Action: About Qt
-  *
-  * This slot is called when the user activates the
-  *   Help|About Qt menu item (or AFSK Decoder|About Qt on Mac)
-  */
+/*! \brief Action: About Qt
+ *
+ * This slot is called when the user activates the
+ * Help|About Qt menu item (or AFSK Decoder|About Qt on Mac)
+ */
 void MainWindow::on_actionAboutQt_triggered()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
