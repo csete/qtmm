@@ -70,7 +70,8 @@ void MainWindow::createDeviceSelector()
 
     /* Add audio device selector */
     inputSelector = new QComboBox(this);
-    inputSelector->setStatusTip(tr("Select audio input device"));
+    inputSelector->setToolTip(tr("Select audio input device"));
+    connect(inputSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(inputSelectionChanged(int)));
 
     foreach (const QAudioDeviceInfo &deviceInfo, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
     {
@@ -105,11 +106,32 @@ void MainWindow::initialiseAudio()
 }
 
 
+/*! \brief Input selection has changed.
+ *  \param index The index to the new selection in the input selector combo box.
+ *
+ * This slot is activated when the user selects a new input device. The selection can be made
+ * both when the decoder is active and when it is idle. If the decoder is active, firs we
+ * disable the decoder by toggling the "Decode" action, then we simply enable it by toggling
+ * the action again.
+ */
+void MainWindow::inputSelectionChanged(int index)
+{
+    Q_UNUSED(index);
+
+    /* check whether decoder is running */
+    if (ui->actionDecode->isChecked()) {
+        ui->actionDecode->toggle();        // stop decoder
+        ui->actionDecode->toggle();        // start decoder
+    }
+
+    /* if decoder is not runnign there is nothing to do */
+
+}
 
 /*! \brief Decoder status changed
  *  \param enabled True if the decoder has been enabled, false if it has been disabled.
  */
-void MainWindow::on_actionDecode_triggered(bool enabled)
+void MainWindow::on_actionDecode_toggled(bool enabled)
 {
     if (enabled) {
         ui->statusBar->showMessage(tr("Starting decoder..."));
@@ -155,10 +177,7 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
         audioBuffer->start();
         audioInput->start(audioBuffer);
 
-        /* disable selector and update status tip */
-        inputSelector->setEnabled(false);
         ui->actionDecode->setToolTip(tr("Stop decoder"));
-
         ui->statusBar->showMessage(tr("Decoder running"));
     }
     else {
@@ -170,10 +189,7 @@ void MainWindow::on_actionDecode_triggered(bool enabled)
         /** TODO: disconnect signals and slots */
         delete audioInput;
 
-        /* enable selector and update status tip */
-        inputSelector->setEnabled(true);
         ui->actionDecode->setToolTip(tr("Start decoder"));
-
         ui->statusBar->showMessage(tr("Decoder stopped"));
 
         /* reset input level indicator */

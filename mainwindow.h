@@ -27,7 +27,8 @@ public:
 private slots:
     void samplesReceived(float *buffer, const int length);
     void audioStateChanged(QAudio::State state);
-    void on_actionDecode_triggered(bool enabled);
+    void inputSelectionChanged(int index);
+    void on_actionDecode_toggled(bool enabled);
     void on_actionClear_triggered();
     void on_actionSave_triggered();
     void on_actionAbout_triggered();
