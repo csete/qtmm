@@ -226,6 +226,16 @@ void MainWindow::audioStateChanged(QAudio::State state)
 }
 
 
+/*! \brief Action: Clear the text view.
+ *
+ * This slot is activated when the user clicks on the Clear button
+ * on the main toolbar.
+ */
+void MainWindow::on_actionClear_triggered()
+{
+    ui->textView->clear();
+}
+
 /*! \brief Action: Save
  *
  * This slot is called when the user activates the File|Save menu item.
