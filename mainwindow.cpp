@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     afsk12 = new CAfsk12();
 
     connect(afsk12, SIGNAL(newMessage(QString)), ui->textView, SLOT(appendPlainText(QString)));
+
+    ui->statusBar->showMessage(tr("Decoder ready - select and input source then press start"));
 }
 
 MainWindow::~MainWindow()
