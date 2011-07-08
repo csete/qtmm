@@ -14,8 +14,8 @@
    <string>AFSK1200 Decoder</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qmm.qrc">
-    <normaloff>:/icons/icons/qmm.png</normaloff>:/icons/icons/qmm.png</iconset>
+   <iconset resource="qtmm.qrc">
+    <normaloff>:/icons/icons/qtmm.png</normaloff>:/icons/icons/qtmm.png</iconset>
   </property>
   <property name="iconSize">
    <size>
@@ -101,7 +101,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qmm.qrc">
+    <iconset resource="qtmm.qrc">
      <normaloff>:/icons/icons/play.png</normaloff>:/icons/icons/play.png</iconset>
    </property>
    <property name="text">
@@ -137,7 +137,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="qmm.qrc">
+    <iconset resource="qtmm.qrc">
      <normaloff>:/icons/icons/save.png</normaloff>:/icons/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -152,7 +152,7 @@
   </action>
   <action name="actionClear">
    <property name="icon">
-    <iconset resource="qmm.qrc">
+    <iconset resource="qtqtmmmm.qrc">
      <normaloff>:/icons/icons/clear.png</normaloff>:/icons/icons/clear.png</iconset>
    </property>
    <property name="text">
@@ -165,7 +165,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="qmm.qrc"/>
+  <include location="qtmm.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -54,7 +54,7 @@ CONFIG(debug, debug|release) {
 } else {
     DEFINES += QT_NO_DEBUG
     DEFINES += QT_NO_DEBUG_OUTPUT
-    VER = 1.0.36
+    VER = 1.0.37
 }
 
 # Tip from: http://www.qtcentre.org/wiki/index.php?title=Version_numbering_using_QMake
@@ -81,14 +81,14 @@ FORMS    += mainwindow.ui
 
 win32 {
     # application icon on Windows
-    RC_FILE = qmm.rc
+    RC_FILE = qtmm.rc
 } else:macx {
     # app icon on OSX
-    ICON = icons/qmm.icns
+    ICON = icons/qtmm.icns
 }
 
 OTHER_FILES += \
     README.txt
 
 RESOURCES += \
-    qmm.qrc
+    qtmm.qrc
