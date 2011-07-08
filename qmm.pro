@@ -54,7 +54,7 @@ CONFIG(debug, debug|release) {
 } else {
     DEFINES += QT_NO_DEBUG
     DEFINES += QT_NO_DEBUG_OUTPUT
-    VER = 1.0.35
+    VER = 1.0.36
 }
 
 # Tip from: http://www.qtcentre.org/wiki/index.php?title=Version_numbering_using_QMake

@@ -315,7 +315,7 @@ void MainWindow::on_actionAbout_triggered()
                           "transmissions, including APRS.</p>"
                           "<p>AFSK1200 decoder is written using the Qt toolkit (see About Qt) and is avaialble "
                           "for Linux, Mac and Windows. You can download the latest version from the "
-                          "<a href='http://qmm.sf.net/'>application website</a>."
+                          "<a href='http://qtmm.sf.net/'>application website</a>."
                           ).arg(VERSION));
 }
 
