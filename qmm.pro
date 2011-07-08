@@ -78,6 +78,15 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+
+win32 {
+    # application icon on Windows
+    RC_FILE = qmm.rc
+} else:macx {
+    # app icon on OSX
+    ICON = icons/qmm.icns
+}
+
 OTHER_FILES += \
     README.txt
 

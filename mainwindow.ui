@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>AFSK1200 Decoder</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="qmm.qrc">
+    <normaloff>:/icons/icons/qmm.png</normaloff>:/icons/icons/qmm.png</iconset>
+  </property>
   <property name="iconSize">
    <size>
     <width>20</width>
