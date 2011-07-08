@@ -51,7 +51,7 @@ CSsi::CSsi(QWidget *parent)
     setBackgroundRole(QPalette::Base);
     //setAutoFillBackground(true);
 
-    setStatusTip(tr("Input level indicator"));
+    setToolTip(tr("Input level indicator"));
 
     m_level = 0;
     m_alpha = 0.15;
