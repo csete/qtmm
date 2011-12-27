@@ -6,27 +6,22 @@
 
 QT       += core gui
 
-#
-# Ubuntu 10.10 and 11.04: changes due to some strangeness in Debian Qt packages
+# Ubuntu 10.10, 11.04 and 11.11 need explicit specifications
 # Thanks to Andrea IW0HDV
-#
-linux-g++ {
-    #
-    # Try to catch distro informations
-    #
+linux-g++|linux-g++-64 {
+    # Try to scan linux distribution info
     DISTRO=$$system(cat /etc/issue | head -n1 | cut -f1 -d\' \')
     DISTRO_MAJ=$$system(cat /etc/issue | head -n1 | cut -f2 -d\' \' | cut -f1 -d\\.)
     DISTRO_MIN=$$system(cat /etc/issue | head -n1 | cut -f2 -d\' \' | cut -f2 -d\\.)
+    message(Linux: $$DISTRO $$DISTRO_MAJ $$DISTRO_MIN)
 
     # specific to Ubuntu 10.10
     equals(DISTRO,Ubuntu):equals(DISTRO_MAJ,10):equals(DISTRO_MIN,10) {
-       message(Linux $$DISTRO $$DISTRO_MAJ $$DISTRO_MIN)
        INCLUDEPATH += $$quote(/usr/include/QtMultimediaKit)
        LIBS += $$quote(-lQtMultimediaKit)
     } else {
-       # specific to Ubuntu 11.04
-       equals(DISTRO,Ubuntu):equals(DISTRO_MAJ,11):equals(DISTRO_MIN,04) {
-          message(Linux $$DISTRO $$DISTRO_MAJ $$DISTRO_MIN)
+       # specific to Ubuntu 11.04 and 11.10
+       equals(DISTRO,Ubuntu):equals(DISTRO_MAJ,11) {
           INCLUDEPATH += $$quote(/usr/include/QtMobility)
           INCLUDEPATH += $$quote(/usr/include/QtMultimediaKit)
           LIBS += $$quote(-lQtMultimediaKit)
@@ -35,6 +30,7 @@ linux-g++ {
        }
     }
 } else {
+    message(Not Linux)
     QT += multimedia
 }
 
