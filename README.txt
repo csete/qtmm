@@ -37,7 +37,7 @@ The Linux packages require the Qt runtime libraries to be installed.
 3. Future plans
 
 Qtmm was conceived as a small experiment to test integration of multimon source
-code into Qt application before doing it on a larger scale. I do not plan to
+code into Qt application before doing it in gqrx. I do not plan to
 do any active development of the application besides bringing it to a usable
 and stable form.
 
