@@ -17,7 +17,7 @@ pre-compile binary packages available for download.
 2.1 Compiling the source
 
 You need to have Qt 4.7 or later.
-For Mac or windows get the latest Qt SDK from http://qt.nokia.com/
+For Mac or windows get the latest Qt SDK from http://qt.io/
 On Linux you can just use the Qt SDK that comes with your distribution. On
 Ubuntu (and maybe other distros) you also need to install libqtmultimediakit
 and qtmobility-dev packages.
