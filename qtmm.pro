@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 # Ubuntu 10.10, 11.04 and 11.11 need explicit specifications
 # Thanks to Andrea IW0HDV
