@@ -28,7 +28,7 @@
 
 
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(ssi);
 
     connect(audioBuffer, SIGNAL(update(qreal)), ssi, SLOT(setLevel(qreal)));
-    connect(audioBuffer, SIGNAL(newData(float*,int)), this, SLOT(samplesReceived(float*,int)));
+    connect(audioBuffer, SIGNAL(newData(float*, int)), this, SLOT(samplesReceived(float*, int)));
 
     /* initialise decoders */
     afsk12 = new CAfsk12();
@@ -64,7 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (ui->actionDecode->isChecked()) {
+    if(ui->actionDecode->isChecked())
+    {
         audioBuffer->stop();
         audioInput->stop();
         delete audioInput;
@@ -93,12 +94,12 @@ void MainWindow::createDeviceSelector()
     inputSelector->setToolTip(tr("Select audio input device"));
     connect(inputSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(inputSelectionChanged(int)));
 
-    foreach (const QAudioDeviceInfo &deviceInfo, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
+    foreach(const QAudioDeviceInfo& deviceInfo, QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
     {
-         inputSelector->addItem(deviceInfo.deviceName());
+        inputSelector->addItem(deviceInfo.deviceName());
 
-         /* store deviceInfo */
-         inputDevices.append(deviceInfo);
+        /* store deviceInfo */
+        inputDevices.append(deviceInfo);
     }
 
     inputLabel = new QLabel(tr(" Input:"), this);
@@ -113,8 +114,8 @@ void MainWindow::createDeviceSelector()
 /*! \brief Initialise audio related data. */
 void MainWindow::initialiseAudio()
 {
-    audioFormat.setFrequency(22050);
-    audioFormat.setChannels(1);
+    audioFormat.setSampleRate(22050);
+    audioFormat.setChannelCount(1);
     audioFormat.setSampleSize(16);
     audioFormat.setSampleType(QAudioFormat::SignedInt);
     audioFormat.setByteOrder(QAudioFormat::LittleEndian);
@@ -139,7 +140,8 @@ void MainWindow::inputSelectionChanged(int index)
     Q_UNUSED(index);
 
     /* check whether decoder is running */
-    if (ui->actionDecode->isChecked()) {
+    if(ui->actionDecode->isChecked())
+    {
         ui->actionDecode->toggle();        // stop decoder
         ui->actionDecode->toggle();        // start decoder
     }
@@ -153,12 +155,14 @@ void MainWindow::inputSelectionChanged(int index)
  */
 void MainWindow::on_actionDecode_toggled(bool enabled)
 {
-    if (enabled) {
+    if(enabled)
+    {
         ui->statusBar->showMessage(tr("Starting decoder..."));
 
         /* check that selected input device supports desired format, if not try nearest */
         QAudioDeviceInfo info(inputDevices.at(inputSelector->currentIndex()));
-        if (!info.isFormatSupported(audioFormat)) {
+        if(!info.isFormatSupported(audioFormat))
+        {
             qWarning() << "Default format not supported - trying to use nearest";
             audioFormat = info.nearestFormat(audioFormat);
         }
@@ -200,7 +204,8 @@ void MainWindow::on_actionDecode_toggled(bool enabled)
         ui->actionDecode->setToolTip(tr("Stop decoder"));
         ui->statusBar->showMessage(tr("Decoder running"));
     }
-    else {
+    else
+    {
         ui->statusBar->showMessage(tr("Stopping decoder"));
 
         /* stop audio processing */
@@ -225,12 +230,13 @@ void MainWindow::on_actionDecode_toggled(bool enabled)
  *
  * Calls the afsk1200 decoder.
  */
-void MainWindow::samplesReceived(float *buffer, const int length)
+void MainWindow::samplesReceived(float* buffer, const int length)
 {
     int overlap = 18;
     int i;
 
-    for (i = 0; i < length/*-overlap*/; i++) {
+    for(i = 0; i < length/*-overlap*/; i++)
+    {
         tmpbuf.append(buffer[i]);
     }
 
@@ -238,7 +244,8 @@ void MainWindow::samplesReceived(float *buffer, const int length)
 
     /* clear tmpbuf and store "overlap" */
     tmpbuf.clear();
-    for (i = length-overlap; i < length; i++) {
+    for(i = length - overlap; i < length; i++)
+    {
         tmpbuf.append(buffer[i]);
     }
 
@@ -253,7 +260,8 @@ void MainWindow::audioStateChanged(QAudio::State state)
     qDebug() << "Audio state change: " << state << " ERROR: " << audioInput->error();
 #ifdef Q_OS_MAC
     /* On OSX audio stops due to underrun when window is minimized */
-    if (state == 3) {
+    if(state == 3)
+    {
         audioBuffer->stop();
         audioBuffer->start();
         audioInput->start(audioBuffer);
@@ -284,13 +292,15 @@ void MainWindow::on_actionSave_triggered()
                                                     QDir::homePath(),
                                                     tr("Text Files (*.txt)"));
 
-    if (fileName.isEmpty()) {
+    if(fileName.isEmpty())
+    {
         qDebug() << "Save as cancelled by user";
         return;
     }
 
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
         qDebug() << "Error creating file: " << fileName;
         return;
     }
@@ -316,7 +326,7 @@ void MainWindow::on_actionAbout_triggered()
                           "<p>AFSK1200 decoder is written using the Qt toolkit (see About Qt) and is avaialble "
                           "for Linux, Mac and Windows. You can download the latest version from the "
                           "<a href='http://qtmm.sf.net/'>application website</a>."
-                          ).arg(VERSION));
+                         ).arg(VERSION));
 }
 
 /*! \brief Action: About Qt
