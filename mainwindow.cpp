@@ -113,8 +113,8 @@ void MainWindow::createDeviceSelector()
 /*! \brief Initialise audio related data. */
 void MainWindow::initialiseAudio()
 {
-    audioFormat.setFrequency(22050);
-    audioFormat.setChannels(1);
+    audioFormat.setSampleRate(22050);
+    audioFormat.setChannelCount(1);
     audioFormat.setSampleSize(16);
     audioFormat.setSampleType(QAudioFormat::SignedInt);
     audioFormat.setByteOrder(QAudioFormat::LittleEndian);

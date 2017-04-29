@@ -122,7 +122,7 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
     if (m_maxAmplitude) {
         Q_ASSERT(m_format.sampleSize() % 8 == 0);
         const int channelBytes = m_format.sampleSize() / 8;
-        const int sampleBytes = m_format.channels() * channelBytes;
+        const int sampleBytes = m_format.channelCount() * channelBytes;
         Q_ASSERT(len % sampleBytes == 0);
         const int numSamples = len / sampleBytes;
 
@@ -133,7 +133,7 @@ qint64 CAudioBuffer::writeData(const char *data, qint64 len)
         const unsigned char *ptr = reinterpret_cast<const unsigned char *>(data);
 
         for (int i = 0; i < numSamples; ++i) {
-            for(int j = 0; j < m_format.channels(); ++j) {
+            for(int j = 0; j < m_format.channelCount(); ++j) {
                 qint16 value = 0;
 
                 if (m_format.sampleSize() == 8 && m_format.sampleType() == QAudioFormat::UnSignedInt) {
