@@ -17,16 +17,15 @@
  *      along with this program; if not, write to the Free Software
  *      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#include <QDebug>
 #include <QAudio>
+#include <QDebug>
+#include <QDir>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
-#include <QFileDialog>
-#include <QDir>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -64,7 +63,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if (ui->actionDecode->isChecked()) {
+    if (ui->actionDecode->isChecked())
+    {
         audioBuffer->stop();
         audioInput->stop();
         delete audioInput;
@@ -76,18 +76,16 @@ MainWindow::~MainWindow()
     delete ssi;
     delete afsk12;
     delete ui;
-
 }
 
-
-/*! \brief Create device selector widget.
+/*
+ * Create device selector widget.
  *
  * The device selector widget is a combo box on the main toolbar
  * listing all available input devices.
  */
 void MainWindow::createDeviceSelector()
 {
-
     /* Add audio device selector */
     inputSelector = new QComboBox(this);
     inputSelector->setToolTip(tr("Select audio input device"));
@@ -104,9 +102,7 @@ void MainWindow::createDeviceSelector()
     inputLabel = new QLabel(tr(" Input:"), this);
     ui->mainToolBar->insertWidget(ui->actionDecode, inputLabel);
     ui->mainToolBar->insertWidget(ui->actionDecode, inputSelector);
-
     ui->actionDecode->setToolTip(tr("Start decoder"));
-
 }
 
 
@@ -121,44 +117,40 @@ void MainWindow::initialiseAudio()
     audioFormat.setCodec("audio/pcm");
 
     audioBuffer  = new CAudioBuffer(audioFormat, this);
-
-
 }
 
-
-/*! \brief Input selection has changed.
- *  \param index The index to the new selection in the input selector combo box.
- *
- * This slot is activated when the user selects a new input device. The selection can be made
- * both when the decoder is active and when it is idle. If the decoder is active, firs we
- * disable the decoder by toggling the "Decode" action, then we simply enable it by toggling
- * the action again.
- */
+/*
+ * Input selection has changed.
+ * This slot is activated when the user selects a new input device
+*/
 void MainWindow::inputSelectionChanged(int index)
 {
     Q_UNUSED(index);
 
-    /* check whether decoder is running */
-    if (ui->actionDecode->isChecked()) {
-        ui->actionDecode->toggle();        // stop decoder
-        ui->actionDecode->toggle();        // start decoder
+    /* check whether decoder is running, if so, restart */
+    if (ui->actionDecode->isChecked())
+    {
+        ui->actionDecode->toggle();
+        ui->actionDecode->toggle();
     }
 
-    /* if decoder is not runnign there is nothing to do */
-
+    /* if decoder is not running there is nothing to do */
 }
 
-/*! \brief Decoder status changed
- *  \param enabled True if the decoder has been enabled, false if it has been disabled.
+/*
+ * Decoder status changed
+ * If enabled=true if the decoder has been enabled, false if it has been disabled.
  */
 void MainWindow::on_actionDecode_toggled(bool enabled)
 {
-    if (enabled) {
+    if (enabled)
+    {
         ui->statusBar->showMessage(tr("Starting decoder..."));
 
         /* check that selected input device supports desired format, if not try nearest */
         QAudioDeviceInfo info(inputDevices.at(inputSelector->currentIndex()));
-        if (!info.isFormatSupported(audioFormat)) {
+        if (!info.isFormatSupported(audioFormat))
+        {
             qWarning() << "Default format not supported - trying to use nearest";
             audioFormat = info.nearestFormat(audioFormat);
         }
@@ -200,7 +192,8 @@ void MainWindow::on_actionDecode_toggled(bool enabled)
         ui->actionDecode->setToolTip(tr("Stop decoder"));
         ui->statusBar->showMessage(tr("Decoder running"));
     }
-    else {
+    else
+    {
         ui->statusBar->showMessage(tr("Stopping decoder"));
 
         /* stop audio processing */
@@ -214,23 +207,21 @@ void MainWindow::on_actionDecode_toggled(bool enabled)
 
         /* reset input level indicator */
         ssi->setLevel(0.0);
-
     }
 }
 
-
-/*! \brief Slot for receiveing new audio samples.
- *  \param data The sample buffer.
- *  \param length The number of samples in the buffer.
- *
- * Calls the afsk1200 decoder.
+/*
+ * Slot for receiveing new audio samples.
+ *   data is the sample buffer.
+ *   length is the number of samples in the buffer.
  */
 void MainWindow::samplesReceived(float *buffer, const int length)
 {
     int overlap = 18;
     int i;
 
-    for (i = 0; i < length/*-overlap*/; i++) {
+    for (i = 0; i < length; i++)
+    {
         tmpbuf.append(buffer[i]);
     }
 
@@ -238,22 +229,23 @@ void MainWindow::samplesReceived(float *buffer, const int length)
 
     /* clear tmpbuf and store "overlap" */
     tmpbuf.clear();
-    for (i = length-overlap; i < length; i++) {
+    for (i = length-overlap; i < length; i++)
+    {
         tmpbuf.append(buffer[i]);
     }
-
 }
 
-
-/*! \brief Slot for audio input state changes.
- *  \param state The new state of the audio input.
+/*
+ * Slot for audio input state changes.
+ *   state is the new state of the audio input.
  */
 void MainWindow::audioStateChanged(QAudio::State state)
 {
     qDebug() << "Audio state change: " << state << " ERROR: " << audioInput->error();
 #ifdef Q_OS_MAC
     /* On OSX audio stops due to underrun when window is minimized */
-    if (state == 3) {
+    if (state == 3)
+    {
         audioBuffer->stop();
         audioBuffer->start();
         audioInput->start(audioBuffer);
@@ -261,36 +253,27 @@ void MainWindow::audioStateChanged(QAudio::State state)
 #endif
 }
 
-
-/*! \brief Action: Clear the text view.
- *
- * This slot is activated when the user clicks on the Clear button
- * on the main toolbar.
- */
 void MainWindow::on_actionClear_triggered()
 {
     ui->textView->clear();
 }
 
-/*! \brief Action: Save
- *
- * This slot is called when the user activates the File|Save menu item.
- * It asks for a file name, then saves the contents of the text viewer
- * to a plain text file.
- */
 void MainWindow::on_actionSave_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("Save File"),
                                                     QDir::homePath(),
                                                     tr("Text Files (*.txt)"));
 
-    if (fileName.isEmpty()) {
+    if (fileName.isEmpty())
+    {
         qDebug() << "Save as cancelled by user";
         return;
     }
 
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
         qDebug() << "Error creating file: " << fileName;
         return;
     }
@@ -300,14 +283,10 @@ void MainWindow::on_actionSave_triggered()
     file.close();
 }
 
-/*! \brief Action: About AFSK1200 Decoder
- *
- * This slot is called when the user activates the
- * Help|About menu item (or AFSK1200 Decoder|About on Mac)
- */
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this, tr("About AFSK1200 Decoder"),
+    QMessageBox::about(this,
+                       tr("About AFSK1200 decoder"),
                        tr("<p>AFSK1200 Decoder %1</p>"
                           "<p>A simple AFSK1200 decoder that uses the computer's soundcard "
                           "for input. It can decode AX.25 packets and displays them in a text view.</p>"
@@ -319,11 +298,6 @@ void MainWindow::on_actionAbout_triggered()
                           ).arg(VERSION));
 }
 
-/*! \brief Action: About Qt
- *
- * This slot is called when the user activates the
- * Help|About Qt menu item (or AFSK Decoder|About Qt on Mac)
- */
 void MainWindow::on_actionAboutQt_triggered()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
