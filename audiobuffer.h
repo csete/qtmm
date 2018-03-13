@@ -39,12 +39,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#ifndef AUDIOBUFFER_H
-#define AUDIOBUFFER_H
+#pragma once
 
-#include <QIODevice>
-#include <QAudioInput>
 #include <QAudioFormat>
+#include <QAudioInput>
+#include <QIODevice>
 #include <QVarLengthArray>
 
 
@@ -76,5 +75,3 @@ signals:
     void newData(float *data, const int len);
 };
 
-
-#endif // AUDIOBUFFER_H
