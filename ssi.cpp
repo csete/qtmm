@@ -42,8 +42,8 @@
 ****************************************************************************/
 
 #include <QPainter>
-#include "ssi.h"
 
+#include "ssi.h"
 
 CSsi::CSsi(QWidget *parent)
     : QWidget(parent)
@@ -67,16 +67,15 @@ CSsi::CSsi(QWidget *parent)
     m_brush = QBrush(m_gradient);
 }
 
-
 void CSsi::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
 
     painter.setPen(Qt::black);
-    painter.drawRect(QRect(painter.viewport().left()+10,
-                           painter.viewport().top()+9,
-                           painter.viewport().right()-20,
-                           painter.viewport().bottom()-18));
+    painter.drawRect(QRect(painter.viewport().left() + 10,
+                           painter.viewport().top() + 9,
+                           painter.viewport().right() - 20,
+                           painter.viewport().bottom() - 18));
     if (m_level == 0.0)
         return;
 
@@ -84,21 +83,20 @@ void CSsi::paintEvent(QPaintEvent * /* event */)
 
     painter.setPen(QPen(m_brush, 1.0));
 
-    int pos = ((painter.viewport().right()-20)-(painter.viewport().left()+11))*m_level;
-    for (int i = 0; i < 10; ++i) {
-        int x1 = painter.viewport().left()+11;
-        int y1 = painter.viewport().top()+10+i;
-        int x2 = painter.viewport().left()+20+pos;
-        int y2 = painter.viewport().top()+10+i;
-        if (x2 < painter.viewport().left()+10)
-            x2 = painter.viewport().left()+10;
+    int pos = ((painter.viewport().right()-20)-(painter.viewport().left() + 11)) * m_level;
+    for (int i = 0; i < 10; ++i)
+    {
+        int x1 = painter.viewport().left() + 11;
+        int y1 = painter.viewport().top() + 10 + i;
+        int x2 = painter.viewport().left() + 20 + pos;
+        int y2 = painter.viewport().top() + 10 + i;
+        if (x2 < painter.viewport().left() + 10)
+            x2 = painter.viewport().left() + 10;
 
-        painter.drawLine(QPoint(x1, y1),QPoint(x2, y2));
+        painter.drawLine(QPoint(x1, y1), QPoint(x2, y2));
     }
 }
 
-
-/*! \brief Set new time constant for exponential filter. */
 void CSsi::setAlpha(qreal value)
 {
     if ((value > 1.0) || (value < 0.0))
@@ -107,9 +105,8 @@ void CSsi::setAlpha(qreal value)
     m_alpha = value;
 }
 
-
-/*! \brief Set new level.
- *  \param value The new level between 0.0 and 1.0.
+/*
+ * Set new level.
  *
  * If the new level is greater than the current level apply it immediately, if it is
  * lower apply it through an exponential filter. This gives it smoother motion. The time
@@ -120,12 +117,14 @@ void CSsi::setLevel(qreal value)
     if ((value > 1.0) || (value < 0.0))
         return;
 
-    if (value > m_level) {
+    if (value > m_level)
+    {
         m_level = value;
     }
-    else {
+    else
+    {
         /* apply exponential filter */
-        m_level = m_alpha*value + (1.0-m_alpha)*m_level;
+        m_level = m_alpha * value + (1.0 - m_alpha) * m_level;
         if (m_level > 1.0)
             m_level = 1.0;
     }

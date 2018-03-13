@@ -40,20 +40,14 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#ifndef SSI_H
-#define SSI_H
+#pragma once
 
+#include <QLinearGradient>
+#include <QObject>
 #include <QPixmap>
 #include <QWidget>
-#include <QObject>
-#include <QLinearGradient>
 
 
-/*! \brief Signal strength indicator.
- *
- * This class provides a graphical widget that can be used to monitor
- * the input signal level.
- */
 class CSsi : public QWidget
 {
     Q_OBJECT
@@ -76,5 +70,3 @@ private:
     QBrush          m_brush;
 };
 
-
-#endif // SSI_H
